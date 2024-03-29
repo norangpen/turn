@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rotating Cube</title>
+    <style>
+        .unity-canvas {
+            width: 960px;
+            height: 600px;
+            display: none; /* Initially hide both */
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="clockwise" class="unity-canvas"></div>
+    <div id="counterclockwise" class="unity-canvas"></div>
+
+    <script>
+        var showClockwise = true;
+
+        function loadUnity(containerId, buildPath) {
+            var container = document.getElementById(containerId);
+            var script = document.createElement('script');
+            script.src = buildPath + '.loader.js';
+            script.onload = () => {
+                createUnityInstance(container, {
+                    dataUrl: buildPath + '.data',
+                    frameworkUrl: buildPath + '.framework.js',
+                    codeUrl: buildPath + '.wasm',
+                    streamingAssetsUrl: 'StreamingAssets',
+                    companyName: 'YourCompanyName',
+                    productName: 'YourProductName',
+                    productVersion: '1.0'
+                }).then(unityInstance => {
+                    container.unityInstance = unityInstance;
+                    // Initially set display to block for the first canvas
+                    if (containerId === 'clockwise') {
+                        container.style.display = 'block';
+                    }
+                });
+            };
+            document.body.appendChild(script);
+        }
+
+        // Adjust these paths to point to the correct locations of your Unity WebGL builds
+        loadUnity('clockwise', 'clockwise/Build/clockwise');
+        loadUnity('counterclockwise', 'counterclockwise/Build/counterclockwise');
+
+        setInterval(() => {
+            document.getElementById('clockwise').style.display = showClockwise ? 'block' : 'none';
+            document.getElementById('counterclockwise').style.display = showClockwise ? 'none' : 'block';
+            showClockwise = !showClockwise;
+        }, 1000); // Switch every second
+    </script>
+</body>
+</html>
